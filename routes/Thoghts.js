@@ -1,6 +1,8 @@
 const express = require("express");
 const router2 = express.Router();
 
+const authMiddleware = require("../middleware/authMiddleware");
+
 const {
   getAllThoughts,
   getThoughtById,
@@ -9,19 +11,20 @@ const {
   deleteThought,
 } = require("../controller/ThoghtsController");
 
-// 🔹 CREATE
-router2.post("/thoughts", createThought);
 
-// 🔹 READ ALL
-router2.get("/thoughts", getAllThoughts);
+// 🔐 CREATE (must be logged in)
+router2.post("/thoughts", authMiddleware, createThought);
 
-// 🔹 READ ONE
-router2.get("/thoughts/:id", getThoughtById);
+// 🔐 READ ALL (user history → must be logged in)
+router2.get("/thoughts", authMiddleware, getAllThoughts);
 
-// 🔹 UPDATE
-router2.put("/thoughts/:id", updateThought);
+// 🔐 READ ONE (must be logged in)
+router2.get("/thoughts/:id", authMiddleware, getThoughtById);
 
-// 🔹 DELETE
-router2.delete("/thoughts/:id", deleteThought);
+// 🔐 UPDATE (must be logged in)
+router2.put("/thoughts/:id", authMiddleware, updateThought);
+
+// 🔐 DELETE (must be logged in)
+router2.delete("/thoughts/:id", authMiddleware, deleteThought);
 
 module.exports = router2;

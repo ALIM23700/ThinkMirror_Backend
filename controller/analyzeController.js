@@ -8,6 +8,11 @@ const analyzeThought = async (req, res) => {
     return res.status(400).json({ error: "Thought is required" });
   }
 
+  // 🔐 IMPORTANT: ensure user exists
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   try {
     // 🔥 Gemini API Call
     const response = await axios.post(
@@ -40,7 +45,6 @@ Thought: "${thought}"
       }
     );
 
-    // 🔥 Extract AI response safely
     let text =
       response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
@@ -53,10 +57,8 @@ Thought: "${thought}"
       });
     }
 
-    // 🔥 Clean markdown if exists
     text = text.replace(/```json|```/g, "").trim();
 
-    // 🔥 Extract JSON block
     const match = text.match(/\{[\s\S]*\}/);
 
     if (!match) {
@@ -78,10 +80,11 @@ Thought: "${thought}"
       });
     }
 
-    // 🔥 Save to MongoDB
+    // 🔥 SAVE WITH USER ID (FIXED)
     const savedThought = await Thought.create({
       text: thought,
       ...data,
+      userId: req.user.id,
     });
 
     return res.json({
@@ -91,8 +94,6 @@ Thought: "${thought}"
 
   } catch (error) {
     console.error("❌ FULL ERROR:");
-
-    // 🔥 VERY IMPORTANT DEBUG (REAL REASON WILL SHOW HERE)
     console.error(error.response?.data || error.message);
 
     return res.status(500).json({

@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const router = require("./routes/analyzeRoutes");
 const router2 = require("./routes/Thoghts");
+const router3 = require("./routes/userRoutes");
 
 // Load env variables
 dotenv.config();
@@ -32,6 +33,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use("/api/analyze",router);
 app.use("/api/analyze",router2);
+app.use("/api/analyze",router3);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

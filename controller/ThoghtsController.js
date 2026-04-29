@@ -1,9 +1,11 @@
 const Thought = require("../model/Thought");
 
-// 🔹 GET ALL
+// 🔹 GET ALL (USER HISTORY)
 const getAllThoughts = async (req, res) => {
   try {
-    const thoughts = await Thought.find().sort({ createdAt: -1 });
+    const thoughts = await Thought.find({
+      userId: req.user.id,
+    }).sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -18,10 +20,13 @@ const getAllThoughts = async (req, res) => {
   }
 };
 
-// 🔹 GET BY ID
+// 🔹 GET BY ID (USER SAFE)
 const getThoughtById = async (req, res) => {
   try {
-    const thought = await Thought.findById(req.params.id);
+    const thought = await Thought.findOne({
+      _id: req.params.id,
+      userId: req.user.id,
+    });
 
     if (!thought) {
       return res.status(404).json({
@@ -42,10 +47,13 @@ const getThoughtById = async (req, res) => {
   }
 };
 
-// 🔹 CREATE
+// 🔹 CREATE (WITH USER ATTACHMENT)
 const createThought = async (req, res) => {
   try {
-    const thought = await Thought.create(req.body);
+    const thought = await Thought.create({
+      ...req.body,
+      userId: req.user.id,
+    });
 
     res.status(201).json({
       success: true,
@@ -59,11 +67,14 @@ const createThought = async (req, res) => {
   }
 };
 
-// 🔹 UPDATE
+// 🔹 UPDATE (ONLY OWNER CAN UPDATE)
 const updateThought = async (req, res) => {
   try {
-    const thought = await Thought.findByIdAndUpdate(
-      req.params.id,
+    const thought = await Thought.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        userId: req.user.id,
+      },
       req.body,
       { new: true }
     );
@@ -87,10 +98,13 @@ const updateThought = async (req, res) => {
   }
 };
 
-// 🔹 DELETE
+// 🔹 DELETE (ONLY OWNER CAN DELETE)
 const deleteThought = async (req, res) => {
   try {
-    const thought = await Thought.findByIdAndDelete(req.params.id);
+    const thought = await Thought.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.user.id,
+    });
 
     if (!thought) {
       return res.status(404).json({
