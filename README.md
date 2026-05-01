@@ -4,7 +4,7 @@ AI-powered decision analysis backend API for the ThinkMirror project.
 It provides authentication, thought management, and AI-based analysis endpoints.
 
 ---
-
+Frontend Repo: https://github.com/ALIM23700/ThinkMirror_Frontend
 
 ## 🚀 Live API
 https://your-backend-url.com
