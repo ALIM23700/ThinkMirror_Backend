@@ -13,7 +13,7 @@ const {
 
 
 // 🔐 CREATE (must be logged in)
-router2.post("/thoughts", authMiddleware, createThought);
+router2.post("/thoughts",  createThought);
 
 // 🔐 READ ALL (user history → must be logged in)
 router2.get("/thoughts", authMiddleware, getAllThoughts);

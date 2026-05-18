@@ -1,9 +1,9 @@
 const express = require("express");
 const { analyzeThought } = require("../controller/analyzeController");
-const authMiddleware = require("../middleware/authMiddleware");
+
 const router = express.Router();
 
 
-router.post("/",authMiddleware,analyzeThought);
+router.post("/",analyzeThought);
 
 module.exports = router;

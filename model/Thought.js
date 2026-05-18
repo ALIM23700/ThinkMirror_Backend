@@ -11,14 +11,15 @@ const thoughtSchema = new mongoose.Schema(
     counterArguments: [String],
     advantages: [String],
 
+    // (NO CHANGE — as you requested)
     riskScore: String,
     recommendation: String,
 
-    // 🔐 ADD THIS (VERY IMPORTANT)
+    // 🔐 FIXED ONLY THIS PART
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: false,
     },
   },
   { timestamps: true }

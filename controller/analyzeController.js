@@ -12,10 +12,6 @@ const analyzeThought = async (req, res) => {
     });
   }
 
-  if (!req.user || !req.user.id) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-
   const fallback = {
     type: "unclear",
     counterArguments: [],
@@ -25,7 +21,7 @@ const analyzeThought = async (req, res) => {
       "Input was unclear or AI response failed. Please try again with a clearer thought.",
   };
 
-  await wait(2000); 
+  await wait(2000);
 
   try {
     let response;
@@ -75,7 +71,7 @@ USER INPUT:
             },
           }
         );
-        break; 
+        break;
       } catch (err) {
         if (err.response?.status === 503 && i < retries - 1) {
           await wait(5000);
@@ -85,7 +81,8 @@ USER INPUT:
       }
     }
 
-    let text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    let text =
+      response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
     console.log("🧠 RAW AI RESPONSE:\n", text);
 
@@ -129,7 +126,7 @@ USER INPUT:
     const savedThought = await Thought.create({
       text: thought,
       ...data,
-      userId: req.user.id,
+      userId: req.user?.id || null, // ✅ ONLY FIX HERE
     });
 
     return res.status(200).json({
